@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service #type is service 
+metadata:
+  name: my-service #you can rename it
+spec:
+  type: Loadbalancer #you can use NodePort type also 
+  selector:
+     app: python-web-app #this should be match with deployment.yml file then only it will discover and will send request to respective pods
+  ports:
+    - port: 80 #forwarding 80 port to 30007
+      targetPort: 8000 #our application is running on 8000 port 
+      nodePort: 30007 # you can use any port
