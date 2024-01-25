@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment #type is deployment 
+metadata:
+  name: python-web-app
+  labels:
+    app: python-web-app #this label will use for service discovery
+spec:
+  replicas: 2 #replica means it will create two pods and if someone delete pod accidently before going to down the pod replica will create new one.
+  selector:
+    matchLabels:
+      app: python-web-app #this label will use for service discovery
+  template:
+    metadata:
+      labels:
+        app: python-web-app
+    spec:
+      containers:
+      - name: python-app
+        image: mabhidevops/python-web-app:v1:latest #This image i already created you can use my docker hub repo - docker pull mabhidevops/python-web-app:v1
+        ports:
+        - containerPort: 8000 #i am using 8000 port
