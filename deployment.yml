@@ -1,27 +1,35 @@
+---
 apiVersion: apps/v1
-kind: Deployment #type is deployment 
+kind: Deployment
 metadata:
   name: python-web-app
   labels:
-    app: python-web-app #this label will use for service discovery
+    app: python-web-app
 spec:
-  replicas: 2 #replica means it will create two pods and if someone delete pod accidently before going to down the pod replica will create new one.
+  replicas: 3
   selector:
     matchLabels:
-      app: python-web-app #this label will use for service discovery
+      app: python-web-app
   template:
     metadata:
       labels:
         app: python-web-app
     spec:
       containers:
-      - name: python-app
-        image: mabhidevops/python-web-app:v1:latest #This image i already created you can use my docker hub repo - docker pull mabhidevops/python-web-app:v1
-        env: #you can configure variable here 
-          - name: DB-PORT #this name you are going to use in application furthure
-            valueFrom:
-              configMapKeyRef: #we are getting values from configmap yml
-                name: test-cm
-                key: db-port
-        ports:
-        - containerPort: 8000 #i am using 8000 port
+        - name: python-app
+          image: mabhidevops/python-web-app:v1
+          volumeMounts:
+            - name: db-connection
+              mountPath: /opt
+          env:
+            - name: DB-PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: test-cm
+                  key: db-port
+          ports:
+            - containerPort: 8000
+      volumes:
+        - name: db-connection
+          configMap:
+            name: test-cm
